@@ -1,0 +1,12 @@
+{
+  "name": "serverless-student-portal",
+  "version": "1.0.0",
+  "description": "\"Serverless Student Portal Task\"",
+  "license": "ISC",
+  "author": "Neel Gajjar",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

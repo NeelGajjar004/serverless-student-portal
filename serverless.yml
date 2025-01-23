@@ -1,0 +1,7 @@
+org: neelgajjar004
+services: serverless-student-portal
+frameworkVersion: '3'
+
+provider: 
+  name: aws
+  
