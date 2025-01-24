@@ -1,2 +1,1 @@
-# Serverless Student Portal                 
-#                           - Neel Gajjar
+# Serverless Student Portal                           - Neel Gajjar

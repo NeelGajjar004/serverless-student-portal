@@ -4,4 +4,70 @@ frameworkVersion: '3'
 
 provider: 
   name: aws
-  
+  runtime: nodejs20.x
+  region: ap-south-1
+  satge: ${opt:stage,'dev'}
+  memorySize: 512
+  timeout: 30
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action: 
+        - dynamodb.PutItem
+        - dynamodb.GetItem
+        - dynamodb.Query
+        - dynamodb.UpdateItem
+        - dynamodb.DeleteItem
+      Resource:
+
+        
+plugins:
+  - serverless-offline
+  # - serverless-dotenv-plugin
+
+custom:
+  usertableName: userTable-${opt:stage,self:provider.stage}  
+
+functions:
+
+
+
+resources:
+  Resources:
+    UserTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ${self:custom.usertableName}
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+          - AttributeName: username
+            AttributeType: S
+          - AttributeName: role
+            AttributeType: S
+          - AttributeName: password
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+          - AttributeName: updatedAt
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        BillingMode: PROVISIONED
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 10
+        GlobalSecondaryIndexes:
+          - IndexName: roleIndex
+            KeySchema:
+              - AttributeName: username
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 10
+            
+
