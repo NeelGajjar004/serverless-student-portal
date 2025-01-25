@@ -11,6 +11,10 @@ class ApiError extends Error{
         this.message = message;
         this.success = false;
         this.errors = errors;
+        this.isBase64Encoded = false;
+        this.headers = {
+            "Access-Control-Allow-Origin": "*"
+        };
 
         if(stack){
             this.stack = stack;

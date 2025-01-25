@@ -1,34 +1,49 @@
 org: neelgajjar004
-services: serverless-student-portal
+service: serverless-student-portal
 frameworkVersion: '3'
 
 provider: 
   name: aws
   runtime: nodejs20.x
   region: ap-south-1
-  satge: ${opt:stage,'dev'}
+  stage: ${opt:stage,'dev'}
   memorySize: 512
   timeout: 30
+  environment:
+    USER_TABLE: ${self:custom.userTableName}
+    STUDENT_TABLE: ${self:custom.studentTableName}
   iamRoleStatements:
     - Effect: "Allow"
       Action: 
-        - dynamodb.PutItem
-        - dynamodb.GetItem
-        - dynamodb.Query
-        - dynamodb.UpdateItem
-        - dynamodb.DeleteItem
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:Query
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
       Resource:
+        - !GetAtt UserTable.Arn
+        - !Join [ "/", [ !GetAtt UserTable.Arn, "*" ] ]
+        - !GetAtt StudentTable.Arn
+        - !Join [ "/", [ !GetAtt StudentTable.Arn, "*" ] ]
 
         
-plugins:
-  - serverless-offline
+# plugins:
+#   - serverless-offline
   # - serverless-dotenv-plugin
 
 custom:
-  usertableName: userTable-${opt:stage,self:provider.stage}  
+  userTableName: userTable-${opt:stage, self:provider.stage}  
+  studentTableName: studentTable-${opt:stage, self:provider.stage}  
 
 functions:
-
+  createUser:
+    handler: user/create-user.handler
+    description: "Create a New User"
+    events:
+      - http:
+          path: user
+          method: post
+          cors: true
 
 
 resources:
@@ -36,33 +51,83 @@ resources:
     UserTable:
       Type: 'AWS::DynamoDB::Table'
       Properties:
-        TableName: ${self:custom.usertableName}
+        TableName: ${self:custom.userTableName}
         AttributeDefinitions:
-          - AttributeName: email
+          - AttributeName: _id
             AttributeType: S
-          - AttributeName: username
+          - AttributeName: email
             AttributeType: S
           - AttributeName: role
             AttributeType: S
-          - AttributeName: password
-            AttributeType: S
-          - AttributeName: createdAt
-            AttributeType: S
-          - AttributeName: updatedAt
-            AttributeType: S
+          # - AttributeName: userName
+          #   AttributeType: S
+          # - AttributeName: password
+          #   AttributeType: S
+          # - AttributeName: createdAt
+          #   AttributeType: S
+          # - AttributeName: updatedAt
+          #   AttributeType: S
         KeySchema:
-          - AttributeName: email
+          - AttributeName: _id
             KeyType: HASH
         BillingMode: PROVISIONED
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 10
         GlobalSecondaryIndexes:
-          - IndexName: roleIndex
+          - IndexName: emailIndex
             KeySchema:
-              - AttributeName: username
+              - AttributeName: email
                 KeyType: HASH
-              - AttributeName: createdAt
+              - AttributeName: role
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 10
+    StudentTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ${self:custom.studentTableName}
+        AttributeDefinitions:
+          - AttributeName: _id
+            AttributeType: S
+          # - AttributeName: studentName
+          #   AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+          # - AttributeName: password
+          #   AttributeType: S
+          # - AttributeName: department
+          #   AttributeType: S
+          - AttributeName: classNo
+            AttributeType: S
+          # - AttributeName: result
+          #   AttributeType: S
+          # - AttributeName: yearReport
+          #   AttributeType: S
+          # - AttributeName: workshopReport
+          #   AttributeType: S
+          # - AttributeName: createdAt
+          #   AttributeType: S
+          # - AttributeName: updatedAt
+          #   AttributeType: S
+        KeySchema:
+          - AttributeName: _id
+            KeyType: HASH
+          - AttributeName: email
+            KeyType: RANGE
+        BillingMode: PROVISIONED
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 10
+        GlobalSecondaryIndexes:
+          - IndexName: emailIndex
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+              - AttributeName: classNo
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
@@ -70,4 +135,3 @@ resources:
               ReadCapacityUnits: 5
               WriteCapacityUnits: 10
             
-
