@@ -1,14 +1,17 @@
-class ApiResponse{
-    constructor(statusCode, data, message = "Success"){
-        this.statusCode = statusCode;
-        this.data = data;
-        this.message = message;
-        this.success = statusCode < 400;
+class apiResponse{
+    constructor(statusCode,success, data, message = "Success"){
+        this.statusCode = statusCode,
         this.isBase64Encoded = false;
         this.headers = {
-            "Access-Control-Allow-Origin": "*"
-        };
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+        },
+        this.body = JSON.stringify({
+            success:success,
+            data: data,
+            message: message,
+        })
     }
 }
 
-export { ApiResponse };
+export { apiResponse };

@@ -38,7 +38,7 @@ custom:
 functions:
   createUser:
     handler: user/create-user.handler
-    description: "Create a New User"
+    description: "Serverless-Student-Portal : Create a New User"
     events:
       - http:
           path: user
@@ -59,25 +59,17 @@ resources:
             AttributeType: S
           - AttributeName: role
             AttributeType: S
-          # - AttributeName: userName
-          #   AttributeType: S
-          # - AttributeName: password
-          #   AttributeType: S
-          # - AttributeName: createdAt
-          #   AttributeType: S
-          # - AttributeName: updatedAt
-          #   AttributeType: S
         KeySchema:
-          - AttributeName: _id
+          - AttributeName: email
             KeyType: HASH
         BillingMode: PROVISIONED
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 10
         GlobalSecondaryIndexes:
-          - IndexName: emailIndex
+          - IndexName: roleIndex
             KeySchema:
-              - AttributeName: email
+              - AttributeName: _id
                 KeyType: HASH
               - AttributeName: role
                 KeyType: RANGE
@@ -91,47 +83,16 @@ resources:
       Properties:
         TableName: ${self:custom.studentTableName}
         AttributeDefinitions:
-          - AttributeName: _id
-            AttributeType: S
-          # - AttributeName: studentName
-          #   AttributeType: S
           - AttributeName: email
             AttributeType: S
-          # - AttributeName: password
-          #   AttributeType: S
-          # - AttributeName: department
-          #   AttributeType: S
           - AttributeName: classNo
             AttributeType: S
-          # - AttributeName: result
-          #   AttributeType: S
-          # - AttributeName: yearReport
-          #   AttributeType: S
-          # - AttributeName: workshopReport
-          #   AttributeType: S
-          # - AttributeName: createdAt
-          #   AttributeType: S
-          # - AttributeName: updatedAt
-          #   AttributeType: S
         KeySchema:
-          - AttributeName: _id
-            KeyType: HASH
           - AttributeName: email
+            KeyType: HASH
+          - AttributeName: classNo
             KeyType: RANGE
         BillingMode: PROVISIONED
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 10
-        GlobalSecondaryIndexes:
-          - IndexName: emailIndex
-            KeySchema:
-              - AttributeName: email
-                KeyType: HASH
-              - AttributeName: classNo
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 10
-            
