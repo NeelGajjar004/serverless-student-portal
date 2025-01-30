@@ -237,7 +237,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-student-portal/dev/1737984732104-2025-01-27T13:32:12.104Z/serverless-student-portal.zip"
+                "S3Key": "serverless/serverless-student-portal/dev/1738126772802-2025-01-29T04:59:32.802Z/serverless-student-portal.zip"
               },
               "Handler": "user/create-user.handler",
               "Runtime": "nodejs20.x",
@@ -262,14 +262,14 @@
               "CreateUserLogGroup"
             ]
           },
-          "CreateUserLambdaVersionPdF324veLujmkreU6dSIWMT2DpXoLwFzXG5uOrYDCyE": {
+          "CreateUserLambdaVersionwaAqAlkqugzBLeT1p8UaEany7zidU55tv3AySc68": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateUserLambdaFunction"
               },
-              "CodeSha256": "vCvEhqVP9zGWush3RdzGyUCxJh1m0ygG+pIcZOMVIoI=",
+              "CodeSha256": "4/wAL6dZ2fAwELcx3+BWeqFR8InV5tf10UVOvgZHq7A=",
               "Description": "Serverless-Student-Portal : Create a New User"
             }
           },
@@ -391,7 +391,7 @@
               "CreateUserLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1737984707678": {
+          "ApiGatewayDeployment1738126734349": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -538,7 +538,7 @@
           "CreateUserLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateUserLambdaVersionPdF324veLujmkreU6dSIWMT2DpXoLwFzXG5uOrYDCyE"
+              "Ref": "CreateUserLambdaVersionwaAqAlkqugzBLeT1p8UaEany7zidU55tv3AySc68"
             },
             "Export": {
               "Name": "sls-serverless-student-portal-dev-CreateUserLambdaFunctionQualifiedArn"
@@ -697,7 +697,7 @@
         "timeout": 30,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "CreateUserLambdaVersionPdF324veLujmkreU6dSIWMT2DpXoLwFzXG5uOrYDCyE"
+        "versionLogicalId": "CreateUserLambdaVersionwaAqAlkqugzBLeT1p8UaEany7zidU55tv3AySc68"
       }
     },
     "resources": {
@@ -815,7 +815,7 @@
     "artifact": "D:\\AppGambit\\serverless-student-portal\\.serverless\\serverless-student-portal.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/serverless-student-portal/dev/1737984732104-2025-01-27T13:32:12.104Z",
+    "artifactDirectoryName": "serverless/serverless-student-portal/dev/1738126772802-2025-01-29T04:59:32.802Z",
     "artifact": "serverless-student-portal.zip"
   }
 }

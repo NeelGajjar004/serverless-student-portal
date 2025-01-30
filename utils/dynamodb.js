@@ -2,7 +2,8 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand, DeleteCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
-import { ApiError } from "./ApiError.js";
+import { apiError } from "./apiError.js";
+import { apiResponse } from "./apiResponse.js";
 
 // const client = new DynamoDBClient();
 // const DynamoDB = DynamoDBDocumentClient.from(client);
@@ -18,15 +19,20 @@ export const createUser = async (item, tableName) => {
         const password = item.password;
         const role = item.role;
     
-        // fields validation 
-        if([userName,email,password,role].some((field) => field?.trim() === "")){
-            // throw new ApiError(400,"All fields are required");
-            return "All fields[userName, email, password, role] are required...!";            
-        }
-        //Roles validation
-        if(!validRoles.includes(role)){
-            return "Invalid Role : "+role+" ==> Valid Roles are "+validRoles.join(", ");
-        }
+        // try {
+            // fields validation 
+            if([userName,email,password,role].some((field) => field?.trim() === "")){
+                return new apiError(400,"All fields are required: email, userName, password, role");
+                // return "All fields[userName, email, password, role] are required...!";            
+            }
+            //Roles validation
+            if(!validRoles.includes(role)){
+                return new apiError(400,`Invalid role. Allowed roles: ${validRoles.join(", ")}`);
+                // return "Invalid Role : "+role+" ==> Valid Roles are "+validRoles.join(", ");
+            }
+        // } catch (error) {
+            // console.log("Validation Error : ",error);
+        // }
 
         //create user
         const params = {
@@ -46,13 +52,15 @@ export const createUser = async (item, tableName) => {
         
         const createCommand = new PutCommand(params);
         const metaData = await DynamoDB.send(createCommand);
-        return {userName, email, role, metaData};
+
+        return new apiResponse(201,true,{userName, email, role, metaData},"User Created Successfully")
+        // return {userName, email, role, metaData};
 
 
     } catch (error) {
-        console.log("\n Errors on createUser method [dynamodb.js] : ",error);
-        // throw new ApiError(500,"Somethong went wrong with while creating user..! [dynamodb.js]",error);
-        throw new ApiError(500,"Somethong went wrong with while creating user..! [dynamodb.js]");
+        console.log("\n[dynamodb.js] issues on createUser method  : ",error);
+        // throw new apiError(500,"Somethong went wrong with while creating user..! [dynamodb.js]",error);
+        throw new apiError(500,"[dynamodb.js] Somethong went wrong with while creating user..!",error);
     }
 }
 
@@ -63,7 +71,7 @@ export const loginUser = async (item, tableName) => {
 
         // fields validation 
         if([email, password].some((field) => field?.trim() === "")){
-            throw new ApiError(400,"email and password fields are required");
+            throw new apiError(400,"email and password fields are required");
         }
 
         const params = {
@@ -76,7 +84,7 @@ export const loginUser = async (item, tableName) => {
 
     } catch (error) {
         console.log("\n Error on createUser method [dynamodb.js] : ",error);
-        throw new ApiError(500,"Somethong went wrong with while creating user..! [dynamodb.js]",error);
+        throw new apiError(500,"Somethong went wrong with while creating user..! [dynamodb.js]",error);
     }
 }
 

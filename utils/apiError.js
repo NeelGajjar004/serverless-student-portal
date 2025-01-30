@@ -1,10 +1,11 @@
-class ApiError{   
+class apiError extends Error{   
     constructor(
         statusCode, 
-        message = "Something went wrong"
+        message = "Something went wrong",
+        error = null
     ){
         
-        // super(message);
+        super(message);
         this.statusCode = statusCode,
         this.isBase64Encoded = false;
         this.headers = {
@@ -14,9 +15,16 @@ class ApiError{
         this.body = JSON.stringify({
             success: false,
             message: message,
+            error: error
         })
     }
 }
+
+
+// export const ApiError = async () => {}
+
+
+
 
     // constructor(
     //     statusCode, 
@@ -97,4 +105,4 @@ class ApiError{
 //     }
 // }
 
-export { ApiError };
+export { apiError };
