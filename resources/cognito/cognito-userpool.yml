@@ -1,0 +1,7 @@
+Type: AWS::Cognito::UserPool
+Properties:
+  AccountRecoverySetting:
+    RecoveryMechanisms:
+    - Name: admin_only
+      Priority: 1
+  

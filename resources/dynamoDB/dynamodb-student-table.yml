@@ -1,0 +1,17 @@
+Type: 'AWS::DynamoDB::Table'
+Properties:
+  TableName: ${self:custom.studentTableName}
+  AttributeDefinitions:
+    - AttributeName: email
+      AttributeType: S
+    - AttributeName: classNo
+      AttributeType: S
+  KeySchema:
+    - AttributeName: email
+      KeyType: HASH
+    - AttributeName: classNo
+      KeyType: RANGE
+  BillingMode: PROVISIONED
+  ProvisionedThroughput:
+    ReadCapacityUnits: 5
+    WriteCapacityUnits: 10

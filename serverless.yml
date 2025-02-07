@@ -48,51 +48,13 @@ functions:
 
 resources:
   Resources:
-    UserTable:
-      Type: 'AWS::DynamoDB::Table'
-      Properties:
-        TableName: ${self:custom.userTableName}
-        AttributeDefinitions:
-          - AttributeName: _id
-            AttributeType: S
-          - AttributeName: email
-            AttributeType: S
-          - AttributeName: role
-            AttributeType: S
-        KeySchema:
-          - AttributeName: email
-            KeyType: HASH
-        BillingMode: PROVISIONED
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 10
-        GlobalSecondaryIndexes:
-          - IndexName: roleIndex
-            KeySchema:
-              - AttributeName: _id
-                KeyType: HASH
-              - AttributeName: role
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 10
-    StudentTable:
-      Type: 'AWS::DynamoDB::Table'
-      Properties:
-        TableName: ${self:custom.studentTableName}
-        AttributeDefinitions:
-          - AttributeName: email
-            AttributeType: S
-          - AttributeName: classNo
-            AttributeType: S
-        KeySchema:
-          - AttributeName: email
-            KeyType: HASH
-          - AttributeName: classNo
-            KeyType: RANGE
-        BillingMode: PROVISIONED
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 10
+    UserTable: ${file(resources/dynamoDB/dynamodb-user-table.yml)}
+    
+    StudentTable: ${file(resources/dynamoDB/dynamodb-student-table.yml)}
+
+    CognitoUserPool: ${file(resources/cognito/cognito-userpool.yml)}
+
+    CognitoUserPoolClient: ${file(resources/cognito/cognito-userpool-client.yml)}
+
+
+    

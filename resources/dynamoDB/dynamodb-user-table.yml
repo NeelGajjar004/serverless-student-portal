@@ -1,0 +1,29 @@
+Type: 'AWS::DynamoDB::Table'
+Properties:
+  TableName: ${self:custom.userTableName}
+  AttributeDefinitions:
+    - AttributeName: _id
+      AttributeType: S
+    - AttributeName: email
+      AttributeType: S
+    - AttributeName: role
+      AttributeType: S
+  KeySchema:
+    - AttributeName: email
+      KeyType: HASH
+  BillingMode: PROVISIONED
+  ProvisionedThroughput:
+    ReadCapacityUnits: 5
+    WriteCapacityUnits: 10
+  GlobalSecondaryIndexes:
+    - IndexName: roleIndex
+      KeySchema:
+        - AttributeName: _id
+          KeyType: HASH
+        - AttributeName: role
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 10
