@@ -10,21 +10,36 @@ provider:
   memorySize: 512
   timeout: 30
   environment:
-    USER_TABLE: ${self:custom.userTableName}
-    STUDENT_TABLE: ${self:custom.studentTableName}
+    USER_POOL: !Ref CognitoUserPool
+    USER_POOL_CLIENT: !Ref CognitoUserPoolClient
+    USER_TABLE: !Ref UserTable
+    SUPER_ADMIN_GROUP: SuperAdmin
+    FACULTY_GROUP: Faculty
+    STUDENT_GROUP: Student
   iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - cognito-idp:AdminCreateUser
+        - cognito-idp:SignUp
+        - cognito-idp:ConfirmSignUp
+        - cognito-idp:AdminAddUserToGroup
+        - cognito-idp:InitiateAuth
+        - cognito-idp:AdminGetUser
+        - cognito-idp:AdminSetUserPassword
+      Resource: "*"
     - Effect: "Allow"
       Action: 
         - dynamodb:PutItem
         - dynamodb:GetItem
         - dynamodb:Query
+        - dynamodb:Scan
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
         - !GetAtt UserTable.Arn
         - !Join [ "/", [ !GetAtt UserTable.Arn, "*" ] ]
-        - !GetAtt StudentTable.Arn
-        - !Join [ "/", [ !GetAtt StudentTable.Arn, "*" ] ]
+        # - !GetAtt StudentTable.Arn
+        # - !Join [ "/", [ !GetAtt StudentTable.Arn, "*" ] ]
 
         
 # plugins:
@@ -32,29 +47,73 @@ provider:
   # - serverless-dotenv-plugin
 
 custom:
+  userPoolName: ${self:service}-UserPool-${opt:stage, self:provider.stage}
+  userPoolClientName: ${self:service}-UserPoolClient-${opt:stage, self:provider.stage}
   userTableName: userTable-${opt:stage, self:provider.stage}  
-  studentTableName: studentTable-${opt:stage, self:provider.stage}  
+  # studentTableName: studentTable-${opt:stage, self:provider.stage}
+
 
 functions:
-  createUser:
-    handler: user/create-user.handler
-    description: "Serverless-Student-Portal : Create a New User"
+  register:
+    handler: functions/auth/register.handler
+    description: "Serverless-Student-Portal : Register a New User"
     events:
       - http:
-          path: user
+          path: register
           method: post
           cors: true
+  confirm-register:
+    handler: functions/auth/confirm-register.handler
+    description: "Serverless-Student-Portal : Confirm Register a New User"
+    events:
+      - http:
+          path: confirm-register
+          method: post
+          cors: true
+  login:
+    handler: functions/auth/login.handler
+    description: "Serverless-Student-Portal : Login User"
+    events:
+      - http:
+          path: login
+          method: post
+          cors: true
+  logout:
+    handler: functions/auth/logout.handler
+    description: "Serverless-Student-Portal : Logout User"
+    events:
+      - http:
+          path: logout
+          method: post
+          cors: true
+  create-faculty:
+    handler: functions/faculty/create-faculty.handler
+    description: "Serverless-Student-Portal : SuperAdmin & Faculty User Can Create a New Faculty User"
+    events:
+      - http:
+          path: create-faculty
+          method: post
+          cors: true
+          authorizer:
+            name: FacultyAuthorizer
+            type: COGNITO_USER_POOLS
+            arn: !GetAtt CognitoUserPool.Arn
 
 
 resources:
   Resources:
-    UserTable: ${file(resources/dynamoDB/dynamodb-user-table.yml)}
-    
-    StudentTable: ${file(resources/dynamoDB/dynamodb-student-table.yml)}
-
     CognitoUserPool: ${file(resources/cognito/cognito-userpool.yml)}
-
+    
     CognitoUserPoolClient: ${file(resources/cognito/cognito-userpool-client.yml)}
 
+    SuperAdminGroup: ${file(resources/cognito-group/superAdmin-cognito-group.yml)}
+    
+    FacultyGroup: ${file(resources/cognito-group/faculty-cognito-group.yml)}
+
+    StudentGroup: ${file(resources/cognito-group/student-cognito-group.yml)}
+
+    UserTable: ${file(resources/dynamoDB/dynamodb-user-table.yml)}
+
+    # StudentTable: ${file(resources/dynamoDB/dynamodb-student-table.yml)}
 
     

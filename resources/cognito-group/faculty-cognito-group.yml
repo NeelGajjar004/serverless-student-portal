@@ -1,0 +1,5 @@
+Type: AWS::Cognito::UserPoolGroup
+Properties:
+  GroupName: Faculty
+  UserPoolId: !Ref CognitoUserPool
+  Precedence: 1

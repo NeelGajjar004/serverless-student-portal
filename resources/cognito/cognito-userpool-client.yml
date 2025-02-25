@@ -1,2 +1,15 @@
 Type: AWS::Cognito::UserPoolClient
 Properties:
+  ClientName: ${self:custom.userPoolClientName}
+  UserPoolId: !Ref CognitoUserPool
+  GenerateSecret: false
+  AccessTokenValidity: 5
+  IdTokenValidity: 5
+  ExplicitAuthFlows:
+    - ALLOW_USER_PASSWORD_AUTH
+    - ALLOW_REFRESH_TOKEN_AUTH
+  SupportedIdentityProviders:
+    - COGNITO
+
+    
+  

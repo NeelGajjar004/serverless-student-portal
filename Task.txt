@@ -2,11 +2,6 @@ Question : first implement using ExpressJS and MongoDB. Store hashed password in
 
 Student Portal
 
-[User : username,email,password,role(superAdmin,faculty) ] {routes : login, createUser}
-[Student : studentname, department, classNo, Result, Report, workshopReport ] {routes : login, getStudentDetails, }
-
-
-
 Features
     ● Allow Super Admin User to log in 
     ● Allow Super Admin User to create Faculty Users

@@ -1,7 +1,55 @@
 Type: AWS::Cognito::UserPool
 Properties:
-  AccountRecoverySetting:
-    RecoveryMechanisms:
-    - Name: admin_only
-      Priority: 1
+  UserPoolName: ${self:custom.userPoolName}
+  Schema:
+    - AttributeDataType: String
+      Mutable: true
+      Name: email
+      Required: true
+    - AttributeDataType: String
+      Mutable: false
+      Name: role
+  Policies:
+    PasswordPolicy:
+      MinimumLength: 8
+      RequireLowercase: true
+      RequireUppercase: true
+      RequireNumbers: true
+      RequireSymbols: true
+      TemporaryPasswordValidityDays: 7 
+  AutoVerifiedAttributes: ["email"]
+  AdminCreateUserConfig:
+    AllowAdminCreateUserOnly: true
+    InviteMessageTemplate:
+      EmailSubject: "Welcome to Student Portal"
+      EmailMessage: ${file(./email-templates/cognito-login-credentials.html)}
+      
+  
+
+
+
+
+
+
+
+  # AccountRecoverySetting:
+  #   RecoveryMechanisms:
+  #   - Name: admin_only
+  #     Priority: 1
+  # AdminCreateUserConfig:
+  #   AllowAdminCreateUserOnly: true
+  # Policies:
+  #   PasswordPolicy:
+  #     MinimumLength: 8
+  #     RequireLowercase: true
+  #     RequireNumbers: true
+  #     RequireSymbols: true
+  #     RequireUppercase: true
+  #     TemporaryPasswordValidityDays: 7
+  # Schema:
+  #   - AttributeDataType: String
+  #     Mutable: true
+  #     Name: name
+  #     Required: true
+  #   - AttributeDataType: String
   

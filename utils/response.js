@@ -1,4 +1,5 @@
-export const response = (statusCode,success,data,message = "",error,errorCode = null) => {
+export const response = ({statusCode,isSuccess,data = null,message = null,error = null}) => {
+    
     return {
         statusCode : statusCode,
         headers : {
@@ -6,11 +7,10 @@ export const response = (statusCode,success,data,message = "",error,errorCode = 
             "Access-Control-Allow-Origin": "*",
         },
         body : JSON.stringify({
-            success : success,
+            success : isSuccess,
             data : data,
             message : message,
-            error : error,
-            errorCode : errorCode,
+            error : error
         }),
     }
 }
