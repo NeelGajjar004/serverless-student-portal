@@ -26,6 +26,7 @@ provider:
         - cognito-idp:InitiateAuth
         - cognito-idp:AdminGetUser
         - cognito-idp:AdminSetUserPassword
+        - cognito-idp:AdminDeleteUser
       Resource: "*"
     - Effect: "Allow"
       Action: 
@@ -67,7 +68,7 @@ functions:
     description: "Serverless-Student-Portal : Confirm Register a New User"
     events:
       - http:
-          path: confirm-register
+          path: verifyRegister
           method: post
           cors: true
   login:
@@ -91,14 +92,73 @@ functions:
     description: "Serverless-Student-Portal : SuperAdmin & Faculty User Can Create a New Faculty User"
     events:
       - http:
-          path: create-faculty
+          path: faculty
           method: post
           cors: true
           authorizer:
             name: FacultyAuthorizer
             type: COGNITO_USER_POOLS
             arn: !GetAtt CognitoUserPool.Arn
-
+  create-student:
+    handler: functions/student/create-student.handler
+    description: "Serverless-Student-Portal : Faculty Can Create a New Student"
+    events:
+      - http:
+          path: student
+          method: post
+          cors: true
+          authorizer:
+            name: StudentAuthorizer
+            type: COGNITO_USER_POOLS
+            arn: !GetAtt CognitoUserPool.Arn
+  update-student:
+    handler: functions/student/update-student.handler
+    description: "Serverless-Student-Portal : Faculty Can update a Existing Students"
+    events:
+      - http:
+          path: student/{studentId}
+          method: put
+          cors: true
+          authorizer:
+            name: StudentAuthorizer
+            type: COGNITO_USER_POOLS
+            arn: !GetAtt CognitoUserPool.Arn
+  user-details:
+    handler: functions/users/user-details.handler
+    description: "Serverless-Student-Portal : User Details"
+    events:
+      - http:
+          path: users/me
+          method: get
+          cors: true
+          authorizer:
+            name: StudentAuthorizer
+            type: COGNITO_USER_POOLS
+            arn: !GetAtt CognitoUserPool.Arn
+  delete-user:
+    handler: functions/users/delete-user.handler
+    description: "Serverless-Student-Portal : Delete User "
+    events:
+      - http:
+          path: users/{userId}
+          method: delete
+          cors: true
+          authorizer:
+            name: StudentAuthorizer
+            type: COGNITO_USER_POOLS
+            arn: !GetAtt CognitoUserPool.Arn
+  user-list:
+    handler: functions/users/user-list.handler
+    description: "Serverless-Student-Portal : User List "
+    events:
+      - http:
+          path: users
+          method: get
+          cors: true
+          authorizer:
+            name: StudentAuthorizer
+            type: COGNITO_USER_POOLS
+            arn: !GetAtt CognitoUserPool.Arn
 
 resources:
   Resources:

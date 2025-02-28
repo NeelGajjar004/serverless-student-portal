@@ -1,4 +1,4 @@
-import { CognitoIdentityProviderClient, AdminCreateUserCommand, SignUpCommand, ConfirmSignUpCommand, AdminAddUserToGroupCommand, InitiateAuthCommand, GlobalSignOutCommand, AdminGetUserCommand, AdminSetUserPasswordCommand } from "@aws-sdk/client-cognito-identity-provider";
+import { CognitoIdentityProviderClient, AdminCreateUserCommand, SignUpCommand, ConfirmSignUpCommand, AdminAddUserToGroupCommand, InitiateAuthCommand, GlobalSignOutCommand, AdminGetUserCommand, AdminSetUserPasswordCommand, AdminDeleteUserCommand } from "@aws-sdk/client-cognito-identity-provider";
 import jwt from "jsonwebtoken";
 
 const { USER_POOL, USER_POOL_CLIENT, FACULTY_GROUP, STUDENT_GROUP } = process.env;
@@ -114,7 +114,7 @@ export const logout = async (accessToken) => {
     return signOut;
 }
 
-export const createFacultyUserBySuperAdminAndFacultyGroupUser = async({email,password}) => {
+export const createCognitoUser = async({email,password,isStudent = true}) => {
 
     if ([email].some((field) => field?.trim() === "")) {
         const error = new Error("Email are required");
@@ -145,15 +145,37 @@ export const createFacultyUserBySuperAdminAndFacultyGroupUser = async({email,pas
     );
     console.log("Set PermanentPassword To User : ",setPermanentPasswordToUser);
 
-    const addUserToGroup = await cognitoClient.send(
-        new AdminAddUserToGroupCommand({
+    if(isStudent === true){
+        const addUserToGroup = await cognitoClient.send(
+            new AdminAddUserToGroupCommand({
+                UserPoolId: USER_POOL,
+                Username: email,
+                GroupName: STUDENT_GROUP
+            })
+        );
+        console.log("Add User To Group : ",addUserToGroup);  
+    }else{
+        const addUserToGroup = await cognitoClient.send(
+            new AdminAddUserToGroupCommand({
+                UserPoolId: USER_POOL,
+                Username: email,
+                GroupName: FACULTY_GROUP
+            })
+        );
+        console.log("Add User To Group : ",addUserToGroup);  
+    }
+    
+    const userDetails = await getUser(email);
+    
+    return userDetails;
+}
+
+export const deleteCognitoUser = async ({userName}) => {
+    return await cognitoClient.send(
+        new AdminDeleteUserCommand({
             UserPoolId: USER_POOL,
-            Username: email,
-            GroupName: FACULTY_GROUP
+            Username: userName
         })
     );
-    console.log("Add User To Group : ",addUserToGroup);    
-    
-    return createUser.User.Username;
 }
 

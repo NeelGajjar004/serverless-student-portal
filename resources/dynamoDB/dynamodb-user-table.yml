@@ -2,22 +2,18 @@ Type: 'AWS::DynamoDB::Table'
 Properties:
   TableName: ${self:custom.userTableName}
   AttributeDefinitions:
-    - AttributeName: _id
-      AttributeType: S
-    - AttributeName: email
+    - AttributeName: userId
       AttributeType: S
     - AttributeName: role
       AttributeType: S
   KeySchema:
-    - AttributeName: email
+    - AttributeName: userId
       KeyType: HASH
   BillingMode: PAY_PER_REQUEST
   GlobalSecondaryIndexes:
-    - IndexName: roleIndex
+    - IndexName: groupIndex
       KeySchema:
-        - AttributeName: _id
-          KeyType: HASH
         - AttributeName: role
-          KeyType: RANGE
+          KeyType: HASH
       Projection:
         ProjectionType: ALL

@@ -20,55 +20,60 @@ export const handler = async (event, context) => {
             message:'User Login successfully...'
         });
     } catch (error) {
-        console.error("[login.js]    ==========> ", error);
+        console.error("[login.js] ==========>", error);
+        
+        let errorMessage = error.message;
+    
+        switch (error.name) {
+            case "NotAuthorizedException":
+                errorMessage = "Incorrect Password: Please enter the correct password.";
+                break;
+    
+            case "InvalidParameterException":
+                errorMessage = error.message === "Missing required parameter PASSWORD" ? "Password cannot be blank." : "Missing required authentication parameters: email, password";
+                break;
+        }
+    
         return response({
-            statusCode: 500,
+            statusCode: 400,
             isSuccess: false,
-            message:'Error on logging in User..!',
-            error:error.message
+            message: "Error logging in user..!",
+            error: errorMessage
         });
+
+        // console.error("[login.js]    ==========> ", error);
+
+        // // Handle Incorrect Password Exception
+        // if (error.name === "NotAuthorizedException") {
+        //     return response({
+        //         statusCode: 400,
+        //         isSuccess: false,
+        //         message: 'Error on logging in User..!',
+        //         error: "Incorrect Password : Please Enter Correct Password..."
+        //     });
+        // }
+
+        // // Handle InvalidParameterException
+        // if (error.name === "InvalidParameterException") {
+        //     let errorMessage = "Missing required authentication parameters: email, password";
+        
+        //     if (error.message === "Missing required parameter PASSWORD") {
+        //         errorMessage = "Password cannot be blank";
+        //     }
+        
+        //     return response({
+        //         statusCode: 400,
+        //         isSuccess: false,
+        //         message: "Error logging in user",
+        //         error: errorMessage
+        //     });
+        // }
+
+        // return response({
+        //     statusCode: 500,
+        //     isSuccess: false,
+        //     message:'Error on logging in User..!',
+        //     error:error.message
+        // });
     }
 };
-
-
-
-
-
-// export const handler = async (event, context) => {
-//     console.log("Event Body : ", event.body);
-
-//     const { email, password } = JSON.parse(event.body);
-
-//     if ([email, password].some((field) => field?.trim() === "")) {
-//         return response(401, false, null, "Email and password are required", "INVALID_INPUT");
-//     }
-
-//     try {
-//         const loginResponse = await cognitoClient.send(new InitiateAuthCommand({
-//             AuthFlow: "USER_PASSWORD_AUTH", // Use USER_PASSWORD_AUTH for username/password login
-//             ClientId: USER_POOL_CLIENT,
-//             AuthParameters: {
-//                 USERNAME: email,
-//                 PASSWORD: password,
-//             },
-//         }));
-//         console.log("Login Response : ",loginResponse);
-//         console.log("Login Authentication Result : ",loginResponse.AuthenticationResult);
-//         // Extract tokens from the response
-//         const { AccessToken, RefreshToken, IdToken } = loginResponse.AuthenticationResult;
-
-//         // Decode the ID token to extract group information
-//         const decodedToken = jwt.decode(IdToken);
-//         const userGroups = decodedToken?.["cognito:groups"] || []; // Extract groups from the token
-
-//         return response(200, true, {
-//             accessToken: AccessToken,
-//             refreshToken: RefreshToken,
-//             idToken: IdToken,
-//             userGroups: userGroups,
-//         }, "User Login successfully...");
-//     } catch (error) {
-//         console.error("[login.js]    ==========> ", error);
-//         return response(400, false, null, "Error logging in", error.message);
-//     }
-// };
