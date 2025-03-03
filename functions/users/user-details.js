@@ -1,6 +1,6 @@
 import { getRecord } from "../../utils/dynamodb.js";
 import { response } from "../../utils/response.js";
-const { STUDENT_GROUP, USER_TABLE } = process.env;
+const { SUPER_ADMIN_GROUP, FACULTY_GROUP, STUDENT_GROUP, USER_TABLE } = process.env;
 
 
 export const handler = async (event) => {
@@ -10,21 +10,21 @@ export const handler = async (event) => {
     // const userGroup = (claims['cognito:groups'] || '').split(','); // user belongs to multiple groups
     const userGroup = claims['cognito:groups']; // user belongs to only one groups
 
-    if(userGroup !== STUDENT_GROUP){
+    if(userGroup !== STUDENT_GROUP && userGroup !== SUPER_ADMIN_GROUP && userGroup !== FACULTY_GROUP){
         return response({
             statusCode: 401,
             isSuccess: false,
-            message:'Error on Getting Student Details..!',
+            message:'Error on Getting User Details..!',
             error:"Unauthorized Access"
         });
     }
 
-    const studentId = claims['sub'];
-    console.log("student Id : ",studentId);
+    const userId = claims['sub'];
+    console.log("user Id : ",userId);
     
     try {
         const Key = {
-            userId: studentId
+            userId: userId
         }
 
         const userDetails = await getRecord({
@@ -44,7 +44,7 @@ export const handler = async (event) => {
         return response({
             statusCode: 500,
             isSuccess: false,
-            message:'Error on Getting Student Details..!',
+            message:'Error on Getting User Details..!',
             error:error.name+" : "+error.message
         });   
     }

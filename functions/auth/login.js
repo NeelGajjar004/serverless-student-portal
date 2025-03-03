@@ -26,7 +26,7 @@ export const handler = async (event, context) => {
     
         switch (error.name) {
             case "NotAuthorizedException":
-                errorMessage = "Incorrect Password: Please enter the correct password.";
+                errorMessage = "Incorrect Email or Password";
                 break;
     
             case "InvalidParameterException":

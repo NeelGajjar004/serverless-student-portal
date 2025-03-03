@@ -20,15 +20,14 @@ export const handler = async (event) => {
         });
     }
 
-    const { email, password, department, classNo } = JSON.parse(event.body);
+    const { email, password, details } = JSON.parse(event.body);
 
     try {
-        
-        if ([email,department,classNo].some((field) => field?.trim() === "")) {
-            const error = new Error("Email, Department & Class No are required");
-            error.name = "INVALID_INPUT";
-            throw error;
-        }
+        // if ([email].some((field) => field?.trim() === "")) {
+        //     const error = new Error("Email is required");
+        //     error.name = "INVALID_INPUT";
+        //     throw error;
+        // }
         
         const createFaculty = await createCognitoUser({email:email,password:password,isStudent:true});
 
@@ -42,8 +41,7 @@ export const handler = async (event) => {
             userId: userSub,
             email: email,
             role: role,
-            department: department,
-            classNo: classNo,
+            details:details,
             createdBy: createdBy,
             createdAt : new Date().toISOString(),
             confirmed: true

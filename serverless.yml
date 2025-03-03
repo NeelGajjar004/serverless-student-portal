@@ -104,7 +104,7 @@ functions:
     description: "Serverless-Student-Portal : Faculty Can Create a New Student"
     events:
       - http:
-          path: student
+          path: students
           method: post
           cors: true
           authorizer:
@@ -116,8 +116,20 @@ functions:
     description: "Serverless-Student-Portal : Faculty Can update a Existing Students"
     events:
       - http:
-          path: student/{studentId}
+          path: students/{studentId}
           method: put
+          cors: true
+          authorizer:
+            name: StudentAuthorizer
+            type: COGNITO_USER_POOLS
+            arn: !GetAtt CognitoUserPool.Arn
+  student-list:
+    handler: functions/student/student-list.handler
+    description: "Serverless-Student-Portal : Faculty Can Listing a Existing Students"
+    events:
+      - http:
+          path: students
+          method: get
           cors: true
           authorizer:
             name: StudentAuthorizer
@@ -136,7 +148,7 @@ functions:
             type: COGNITO_USER_POOLS
             arn: !GetAtt CognitoUserPool.Arn
   delete-user:
-    handler: functions/users/delete-user.handler
+    handler: functions/users/user-delete.handler
     description: "Serverless-Student-Portal : Delete User "
     events:
       - http:

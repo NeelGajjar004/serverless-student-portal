@@ -1,5 +1,5 @@
 import { DynamoDBClient,PutItemCommand } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, UpdateCommand, GetCommand, DeleteCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, UpdateCommand, GetCommand, DeleteCommand, ScanCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 const dynamoDBClient = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(dynamoDBClient);
 const { USER_TABLE } = process.env;
@@ -54,7 +54,7 @@ export const getRecord = async ({ key, tableName }) => {
             Key: key
         })
     );
-};
+}
 
 export const deleteRecord = async ({key, tableName}) => {
     return await docClient.send(
@@ -69,6 +69,37 @@ export const recordList = async ({tableName}) => {
     const userList = await docClient.send(
         new ScanCommand({
             TableName:tableName
+        })
+    );
+
+    const users = userList.Items.map(item => ({
+        userId: item?.userId,
+        email: item?.email,
+        role: item?.role,
+        details: item?.details,
+        department: item?.department,
+        classNo: item?.classNo,
+        createdBy: item?.createdBy,
+        updatedBy: item?.updatedBy,
+        createdAt: item?.createdAt,
+        confirmed: item?.confirmed
+    }));
+
+    return users;
+}
+
+export const getUserListByRoles = async ({role,tableName}) => {
+    const userList = await docClient.send(
+        new QueryCommand({
+            TableName:tableName,
+            IndexName: "groupIndex",
+            KeyConditionExpression: "#role = :role",
+            ExpressionAttributeNames:{
+                "#role":"role"
+            },
+            ExpressionAttributeValues:{
+                ":role": role
+            }
         })
     );
 
