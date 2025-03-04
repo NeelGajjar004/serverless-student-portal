@@ -23,7 +23,6 @@ export const handler = async (event) => {
         
         const studentList = await getUserListByRoles({role:STUDENT_GROUP,tableName:USER_TABLE});
 
-
         return response({
             statusCode: 200,
             isSuccess: true,

@@ -40,40 +40,5 @@ export const handler = async (event, context) => {
             message: "Error logging in user..!",
             error: errorMessage
         });
-
-        // console.error("[login.js]    ==========> ", error);
-
-        // // Handle Incorrect Password Exception
-        // if (error.name === "NotAuthorizedException") {
-        //     return response({
-        //         statusCode: 400,
-        //         isSuccess: false,
-        //         message: 'Error on logging in User..!',
-        //         error: "Incorrect Password : Please Enter Correct Password..."
-        //     });
-        // }
-
-        // // Handle InvalidParameterException
-        // if (error.name === "InvalidParameterException") {
-        //     let errorMessage = "Missing required authentication parameters: email, password";
-        
-        //     if (error.message === "Missing required parameter PASSWORD") {
-        //         errorMessage = "Password cannot be blank";
-        //     }
-        
-        //     return response({
-        //         statusCode: 400,
-        //         isSuccess: false,
-        //         message: "Error logging in user",
-        //         error: errorMessage
-        //     });
-        // }
-
-        // return response({
-        //     statusCode: 500,
-        //     isSuccess: false,
-        //     message:'Error on logging in User..!',
-        //     error:error.message
-        // });
     }
 };

@@ -23,7 +23,6 @@ export const handler = async (event) => {
         
         const userlist = await recordList({tableName:USER_TABLE});
 
-
         return response({
             statusCode: 200,
             isSuccess: true,

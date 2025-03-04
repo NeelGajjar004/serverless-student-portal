@@ -24,8 +24,6 @@ export const handler = async (event,context) => {
 
         const signUp = await register(email,password,role);
 
-        // console.log(signUp);
-
         return response({
             statusCode: 201,
             isSuccess: true,
