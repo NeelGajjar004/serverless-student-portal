@@ -2,12 +2,9 @@ import { CognitoIdentityProviderClient, AdminCreateUserCommand, SignUpCommand, C
 import jwt from "jsonwebtoken";
 
 const { USER_POOL, USER_POOL_CLIENT, FACULTY_GROUP, STUDENT_GROUP } = process.env;
-
-
 const cognitoClient = new CognitoIdentityProviderClient();
 
-
-export const register = async (email,password,role) => {
+export const register = async ({ email, password, role }) => {
 
     if([email,role].some((field) => field?.trim() === "")){
         const error = new Error("Error : All fields are required: email, role");
@@ -32,10 +29,12 @@ export const register = async (email,password,role) => {
             ],
         })
     );
+    
     return signUp;
 }
 
-export const verifyRegister = async (email,confirmationCode) => {
+export const verifyRegister = async ({ email, confirmationCode }) => {
+
     if ([email, confirmationCode].some((field) => field?.trim() === "")) {
         const error = new Error("Email and confirmation code are required");
         error.code = "INVALID_INPUT";
@@ -47,20 +46,22 @@ export const verifyRegister = async (email,confirmationCode) => {
         Username: email,
         ConfirmationCode: confirmationCode,
     }));
-    // console.log("Confirm Sign Up : ",confirmSignUp);
+
     return confirmSignUp;
 }
 
-export const getUser = async (email) => {
+export const getUser = async ({ email }) => {
+
     const userDetails = await cognitoClient.send(new AdminGetUserCommand({
         UserPoolId: USER_POOL,
         Username: email,
     }));
-    // console.log("User Details :",userDetails);
+
     return userDetails;
 }
 
-export const assignGroup = async (email,role) => {
+export const assignGroup = async ({ email, role }) => {
+    
     const addUserToGroup = await cognitoClient.send(
         new AdminAddUserToGroupCommand({
             UserPoolId: USER_POOL,
@@ -68,11 +69,12 @@ export const assignGroup = async (email,role) => {
             GroupName: role
         })
     );
-    // console.log("addUserToGroup : ",addUserToGroup);
+
     return addUserToGroup;
 }
 
-export const login = async (email,password) => {
+export const login = async ({ email, password }) => {
+    
     if ([email].some((field) => field?.trim() === "")) {
         const error = new Error("Email are required");
         error.code = "INVALID_INPUT";
@@ -88,8 +90,6 @@ export const login = async (email,password) => {
         },
     }));
 
-    // console.log("SignIn Authentication Result : ",signIn.AuthenticationResult);
-
     // Extract tokens from the response
     const { AccessToken, RefreshToken, IdToken } = signIn.AuthenticationResult;
 
@@ -100,7 +100,8 @@ export const login = async (email,password) => {
     return { AccessToken, RefreshToken, IdToken, userGroups };
 }
 
-export const logout = async (accessToken) => {
+export const logout = async ({ accessToken }) => {
+    
     if (!accessToken || accessToken.trim() === "") {
         const error = new Error("Access token is required");
         error.code = "INVALID_TOKEN_INPUT";
@@ -110,11 +111,11 @@ export const logout = async (accessToken) => {
     const signOut = await cognitoClient.send(new GlobalSignOutCommand({
         AccessToken: accessToken, // The access token of the user to log out
     }));
-    // console.log("Sign Out : ",signOut);
+
     return signOut;
 }
 
-export const createCognitoUser = async({email,password,isStudent = true}) => {
+export const createCognitoUser = async({ email, password, isStudent = true }) => {
 
     if ([email].some((field) => field?.trim() === "")) {
         const error = new Error("Email are required");
@@ -133,7 +134,7 @@ export const createCognitoUser = async({email,password,isStudent = true}) => {
             TemporaryPassword: password
         })
     );
-    console.log("Create User : ",createUser);
+    // console.log("Create User : ",createUser);
     
     const setPermanentPasswordToUser = await cognitoClient.send(
         new AdminSetUserPasswordCommand({
@@ -143,9 +144,10 @@ export const createCognitoUser = async({email,password,isStudent = true}) => {
             Permanent: true
         })
     );
-    console.log("Set PermanentPassword To User : ",setPermanentPasswordToUser);
+    // console.log("Set PermanentPassword To User : ",setPermanentPasswordToUser);
 
     if(isStudent === true){
+
         const addUserToGroup = await cognitoClient.send(
             new AdminAddUserToGroupCommand({
                 UserPoolId: USER_POOL,
@@ -153,8 +155,9 @@ export const createCognitoUser = async({email,password,isStudent = true}) => {
                 GroupName: STUDENT_GROUP
             })
         );
-        console.log("Add User To Group : ",addUserToGroup);  
+        // console.log("Add User To Group : ",addUserToGroup);  
     }else{
+
         const addUserToGroup = await cognitoClient.send(
             new AdminAddUserToGroupCommand({
                 UserPoolId: USER_POOL,
@@ -162,7 +165,7 @@ export const createCognitoUser = async({email,password,isStudent = true}) => {
                 GroupName: FACULTY_GROUP
             })
         );
-        console.log("Add User To Group : ",addUserToGroup);  
+        // console.log("Add User To Group : ",addUserToGroup);  
     }
     
     const userDetails = await getUser(email);
@@ -170,12 +173,14 @@ export const createCognitoUser = async({email,password,isStudent = true}) => {
     return userDetails;
 }
 
-export const deleteCognitoUser = async ({userName}) => {
+export const deleteCognitoUser = async ({ userName }) => {
+    
     return await cognitoClient.send(
         new AdminDeleteUserCommand({
             UserPoolId: USER_POOL,
             Username: userName
         })
     );
+
 }
 

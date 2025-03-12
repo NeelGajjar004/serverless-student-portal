@@ -1,4 +1,4 @@
-export const response = ({statusCode,isSuccess,data = null,message = null,error = null}) => {
+export const generateResponse = ({statusCode,isSuccess,data = null,message = null,error = null}) => {
     
     return {
         statusCode : statusCode,

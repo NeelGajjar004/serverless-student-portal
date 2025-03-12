@@ -1,13 +1,11 @@
-import { register } from "../../utils/cognito.js";
-import { response } from "../../utils/response.js"; 
+import { register } from "../../utils/cognito.mjs";
+import { generateResponse } from "../../utils/response.mjs"; 
 
-export const handler = async (event,context) => {    
-    // console.log("Event Body : ", event.body);
+export const handler = async (event) => {    
     
     const { email, password, role } = JSON.parse(event.body);
 
     try {
-
         // if([email,role].some((field) => field?.trim() === "")){
         //     // return response(400,false,null,"All fields are required","INVALID_INPUT");
         //     const error = new Error("Error : All fields are required: email, role");
@@ -22,22 +20,24 @@ export const handler = async (event,context) => {
         //     throw error;
         // }
 
-        const signUp = await register(email,password,role);
+        const signUp = await register({ email:email, password:password, role:role });
 
-        return response({
+        return generateResponse({
             statusCode: 201,
             isSuccess: true,
             data: signUp,
             message:'User registered successfully. Please Check Your Email for Confirmation.'
         });
+
     } catch (error) {
-        console.error("[register.js]    ==========> ",error);
-        return response({
+        console.error("[register.mjs]    ==========> ",error);
+
+        return generateResponse({
             statusCode: 400,
             isSuccess: false,
             message:'Error on Registering User..!',
             error:error.message
         });
-    }
 
+    }
 }
