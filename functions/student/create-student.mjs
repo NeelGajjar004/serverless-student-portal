@@ -1,34 +1,17 @@
+import middy from "@middy/core";
 import { createCognitoUser } from "../../utils/cognito.mjs";
 import { insertRecord } from "../../utils/dynamodb.mjs";
 import { generateResponse } from "../../utils/response.mjs";
+import { authorizeByGroup } from "../../middleware/before-middleware.mjs";
 
 const { SUPER_ADMIN_GROUP, FACULTY_GROUP, STUDENT_GROUP, USER_TABLE } = process.env;
 
-export const handler = async (event) => {
+const handler = middy(async (event) => {
 
     const claims = event.requestContext?.authorizer?.claims;
-    const userGroup = claims['cognito:groups']; // user belongs to only one groups
-    // const userGroups = (claims['cognito:groups'] || '').split(','); // user belongs to multiple groups
-
-    if(![SUPER_ADMIN_GROUP,FACULTY_GROUP].includes(userGroup)){
-
-        return generateResponse({
-            statusCode: 401,
-            isSuccess: false,
-            error:"Unauthorized Access"
-        });
-        
-    }
-
     const { email, password, details } = JSON.parse(event.body);
 
     try {
-        // if ([email].some((field) => field?.trim() === "")) {
-        //     const error = new Error("Email is required");
-        //     error.name = "INVALID_INPUT";
-        //     throw error;
-        // }
-        
         const createFaculty = await createCognitoUser({ email:email, password:password, isStudent:true });
         const userSub = createFaculty.UserAttributes.find(attr => attr.Name === "sub")?.Value;
         const createdBy = claims?.email;
@@ -38,7 +21,7 @@ export const handler = async (event) => {
             userId: userSub,
             email: email,
             role: role,
-            details:details,
+            details: details,
             createdBy: createdBy,
             createdAt : new Date().toISOString(),
             confirmed: true
@@ -73,4 +56,10 @@ export const handler = async (event) => {
         });
 
     }
-}
+});
+
+handler.use({
+    before: authorizeByGroup([ SUPER_ADMIN_GROUP, FACULTY_GROUP ])
+});
+
+export { handler }

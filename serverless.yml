@@ -130,6 +130,7 @@ functions:
       include:
         - functions/faculty/create-faculty.mjs
         - utils/**
+        - middleware/**
       exclude:
         - "**/*"
   create-student:
@@ -148,6 +149,7 @@ functions:
       include:
         - functions/student/create-student.mjs
         - utils/**
+        - middleware/**
       exclude:
         - "**/*"
   update-student:
@@ -166,6 +168,7 @@ functions:
       include:
         - functions/student/update-student.mjs
         - utils/**
+        - middleware/**
       exclude:
         - "**/*"
   student-list:
@@ -184,6 +187,7 @@ functions:
       include:
         - functions/student/student-list.mjs
         - utils/**
+        - middleware/**
       exclude:
         - "**/*"
   user-details:
@@ -202,6 +206,7 @@ functions:
       include:
         - functions/users/user-details.mjs
         - utils/**
+        - middleware/**
       exclude:
         - "**/*"
   delete-user:
@@ -220,6 +225,7 @@ functions:
       include:
         - functions/users/user-delete.mjs
         - utils/**
+        - middleware/**
       exclude:
         - "**/*"
   user-list:
@@ -238,6 +244,7 @@ functions:
       include:
         - functions/users/user-list.mjs
         - utils/**
+        - middleware/**
       exclude:
         - "**/*"
 

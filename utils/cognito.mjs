@@ -168,7 +168,7 @@ export const createCognitoUser = async({ email, password, isStudent = true }) =>
         // console.log("Add User To Group : ",addUserToGroup);  
     }
     
-    const userDetails = await getUser(email);
+    const userDetails = await getUser({ email:email });
     
     return userDetails;
 }

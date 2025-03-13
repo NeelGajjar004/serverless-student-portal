@@ -1,24 +1,12 @@
+import middy from "@middy/core";
 import { recordsList } from "../../utils/dynamodb.mjs";
 import { generateResponse } from "../../utils/response.mjs";
+import { authorizeByGroup } from "../../middleware/before-middleware.mjs";
 
 const { SUPER_ADMIN_GROUP, USER_TABLE } = process.env;
 
-export const handler = async (event) => {
-    
-    const claims = event.requestContext?.authorizer?.claims;
-    const userGroup = claims['cognito:groups']; // user belongs to only one groups
-    // const userGroups = (claims['cognito:groups'] || '').split(','); // user belongs to multiple groups
+const handler = middy(async (event) => {
 
-    if(userGroup !== SUPER_ADMIN_GROUP){
-
-        return response({
-            statusCode: 401,
-            isSuccess: false,
-            error:"Unauthorized Access"
-        });
-
-    }
-    
     try {
         const userlist = await recordsList({ tableName:USER_TABLE });
 
@@ -40,4 +28,10 @@ export const handler = async (event) => {
         });   
         
     }
-}
+});
+
+handler.use({
+    before: authorizeByGroup([ SUPER_ADMIN_GROUP ])
+});
+
+export { handler }
