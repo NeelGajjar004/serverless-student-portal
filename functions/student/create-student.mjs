@@ -2,7 +2,7 @@ import middy from "@middy/core";
 import { createCognitoUser } from "../../utils/cognito.mjs";
 import { insertRecord } from "../../utils/dynamodb.mjs";
 import { generateResponse } from "../../utils/response.mjs";
-import { authorizeByGroup } from "../../middleware/before-middleware.mjs";
+import { authorizeByGroup } from "../../middlewares/authorizer-middleware.mjs";
 
 const { SUPER_ADMIN_GROUP, FACULTY_GROUP, STUDENT_GROUP, USER_TABLE } = process.env;
 

@@ -1,7 +1,7 @@
 import middy from "@middy/core";
 import { getUsersListByRoles } from "../../utils/dynamodb.mjs";
 import { generateResponse } from "../../utils/response.mjs";
-import { authorizeByGroup } from "../../middleware/before-middleware.mjs";
+import { authorizeByGroup } from "../../middlewares/authorizer-middleware.mjs";
 
 const { STUDENT_GROUP, FACULTY_GROUP, USER_TABLE } = process.env;
 

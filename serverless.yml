@@ -130,7 +130,7 @@ functions:
       include:
         - functions/faculty/create-faculty.mjs
         - utils/**
-        - middleware/**
+        - middlewares/**
       exclude:
         - "**/*"
   create-student:
@@ -149,7 +149,7 @@ functions:
       include:
         - functions/student/create-student.mjs
         - utils/**
-        - middleware/**
+        - middlewares/**
       exclude:
         - "**/*"
   update-student:
@@ -168,7 +168,7 @@ functions:
       include:
         - functions/student/update-student.mjs
         - utils/**
-        - middleware/**
+        - middlewares/**
       exclude:
         - "**/*"
   student-list:
@@ -187,7 +187,7 @@ functions:
       include:
         - functions/student/student-list.mjs
         - utils/**
-        - middleware/**
+        - middlewares/**
       exclude:
         - "**/*"
   user-details:
@@ -206,7 +206,7 @@ functions:
       include:
         - functions/users/user-details.mjs
         - utils/**
-        - middleware/**
+        - middlewares/**
       exclude:
         - "**/*"
   delete-user:
@@ -225,7 +225,7 @@ functions:
       include:
         - functions/users/user-delete.mjs
         - utils/**
-        - middleware/**
+        - middlewares/**
       exclude:
         - "**/*"
   user-list:
@@ -244,7 +244,7 @@ functions:
       include:
         - functions/users/user-list.mjs
         - utils/**
-        - middleware/**
+        - middlewares/**
       exclude:
         - "**/*"
 
@@ -263,5 +263,4 @@ resources:
     UserTable: ${file(resources/dynamoDB/dynamodb-user-table.yml)}
 
     # StudentTable: ${file(resources/dynamoDB/dynamodb-student-table.yml)}
-
     
