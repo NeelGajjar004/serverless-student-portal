@@ -1,6 +1,6 @@
 import { getUsersListByRoles } from "../../utils/dynamodb.mjs";
 
-const { USER_TABLE } = process.env;
+const { STUDENT_GROUP, USER_TABLE } = process.env;
 
 export const handler = async (event) => {
 
