@@ -10,7 +10,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "serverless": "^3.40.0"
+    "serverless": "^3.40.0",
+    "serverless-appsync-plugin": "^1.14.0",
+    "serverless-jetpack": "^0.11.2",
+    "serverless-plugin-common-excludes": "^4.0.0",
+    "serverless-plugin-include-dependencies": "^6.1.1"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.744.0",
@@ -18,8 +22,6 @@
     "@aws-sdk/lib-dynamodb": "^3.733.0",
     "@middy/core": "^6.1.5",
     "bcryptjs": "^2.4.3",
-    "dotenv": "^16.4.7",
-    "jsonwebtoken": "^9.0.2",
-    "uuid": "^11.0.5"
+    "jsonwebtoken": "^9.0.2"
   }
 }

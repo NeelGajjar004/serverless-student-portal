@@ -1,14 +1,12 @@
-import middy from "@middy/core";
 import { deleteCognitoUser } from "../../utils/cognito.mjs";
 import { deleteRecord, getRecord } from "../../utils/dynamodb.mjs";
-import { generateResponse } from "../../utils/response.mjs";
-import { authorizeByGroup } from "../../middlewares/authorizer-middleware.mjs";
 
-const { SUPER_ADMIN_GROUP, USER_TABLE } = process.env;
+const { USER_TABLE } = process.env;
 
-const handler = middy(async (event) => {
+export const handler = async (event) => {
     
-    const { userId } = event.pathParameters;
+    console.log("Event : ",event);
+    const { userId } = event.arguments;
     
     try {
         const key = { userId: userId };
@@ -21,31 +19,126 @@ const handler = middy(async (event) => {
         }
 
         const userName = existingUser.Item.email;
-        const removeUserfromCognito = await deleteCognitoUser({ userName:userName });
+        await deleteCognitoUser({ userName:userName });
         const deletedUser = await deleteRecord({ tableName: USER_TABLE, key: key });
 
-        return generateResponse({
-            statusCode: 200,
-            isSuccess: true,
-            data: deletedUser,
-            message:'user deleted successfully...'
-        });
+        console.log("deletedUser : ",deletedUser);
+
+        return existingUser.Item;
         
     } catch (error) {
         console.error("[delete-user.mjs]    ==========> ", error);
-
-        return generateResponse({
-            statusCode: 500,
-            isSuccess: false,
-            message:'error on deleting user..!',
-            error:error.name+" : "+error.message
-        }); 
+        
+        throw new Error(error);
+        // throw new Error(error.name+" : "+error.message);
 
     }
-});
+}
 
-handler.use({
-    before: authorizeByGroup([ SUPER_ADMIN_GROUP ])
-});
+// #if($context.error)
+//     $utils.error($context.error.message,$context.error.name, $context.result)
+// #end
 
-export { handler }
+// $utils.toJson($context.result)
+
+
+// GraphQL API :
+
+// import middy from "@middy/core";
+// import { deleteCognitoUser } from "../../utils/cognito.mjs";
+// import { deleteRecord, getRecord } from "../../utils/dynamodb.mjs";
+// import { authorizeByGroup } from "../../middlewares/authorizer-middleware.mjs";
+
+// const { SUPER_ADMIN_GROUP, USER_TABLE } = process.env;
+
+// const handler = middy(async (event) => {
+    
+//     console.log("Event : ",event);
+//     const { userId } = event.arguments;
+    
+//     try {
+//         const key = { userId: userId };
+//         const existingUser = await getRecord({ tableName: USER_TABLE, key: key });
+
+//         if (!existingUser || !existingUser.Item) {
+//             const error = new Error("User Not Found..!");
+//             error.name = "USER_NOT_FOUND_EXCEPTION";
+//             throw error;
+//         }
+
+//         const userName = existingUser.Item.email;
+//         await deleteCognitoUser({ userName:userName });
+//         const deletedUser = await deleteRecord({ tableName: USER_TABLE, key: key });
+
+//         console.log("deletedUser : ",deletedUser);
+
+//         return existingUser.Item;
+        
+//     } catch (error) {
+//         console.error("[delete-user.mjs]    ==========> ", error);
+
+//         throw new Error(error.name+" : "+error.message);
+
+//     }
+// });
+
+// handler.use({
+//     before: authorizeByGroup([ SUPER_ADMIN_GROUP ])
+// });
+
+// export { handler }
+
+
+//  ====> REST API :
+
+// import middy from "@middy/core";
+// import { deleteCognitoUser } from "../../utils/cognito.mjs";
+// import { deleteRecord, getRecord } from "../../utils/dynamodb.mjs";
+// import { generateResponse } from "../../utils/response.mjs";
+// import { authorizeByGroup } from "../../middlewares/authorizer-middleware.mjs";
+
+// const { SUPER_ADMIN_GROUP, USER_TABLE } = process.env;
+
+// const handler = middy(async (event) => {
+    
+//     const { userId } = event.pathParameters;
+    
+//     try {
+//         const key = { userId: userId };
+//         const existingUser = await getRecord({ tableName: USER_TABLE, key: key });
+
+//         if (!existingUser || !existingUser.Item) {
+//             const error = new Error("User Not Found..!");
+//             error.name = "USER_NOT_FOUND_EXCEPTION";
+//             throw error;
+//         }
+
+//         const userName = existingUser.Item.email;
+//         const removeUserfromCognito = await deleteCognitoUser({ userName:userName });
+//         const deletedUser = await deleteRecord({ tableName: USER_TABLE, key: key });
+
+//         return generateResponse({
+//             statusCode: 200,
+//             isSuccess: true,
+//             data: deletedUser,
+//             message:'user deleted successfully...'
+//         });
+        
+//     } catch (error) {
+//         console.error("[delete-user.mjs]    ==========> ", error);
+
+//         return generateResponse({
+//             statusCode: 500,
+//             isSuccess: false,
+//             message:'error on deleting user..!',
+//             error:error.name+" : "+error.message
+//         }); 
+
+//     }
+// });
+
+// handler.use({
+//     before: authorizeByGroup([ SUPER_ADMIN_GROUP ])
+// });
+
+// export { handler }

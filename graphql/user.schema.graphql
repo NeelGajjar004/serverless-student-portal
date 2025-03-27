@@ -1,0 +1,60 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+
+    studentList : [user] 
+    @aws_auth(cognito_groups: [ "Faculty" ])
+
+    userDetails : user 
+    @aws_auth(cognito_groups: [ "SuperAdmin", "Faculty", "Student" ])
+
+    userList : [user] 
+    @aws_auth(cognito_groups: [ "SuperAdmin" ])
+}
+
+type Mutation {
+
+    createFaculty(
+        input: createUserInput!
+    ) : user
+    @aws_auth(cognito_groups: [ "SuperAdmin", "Faculty" ])
+
+    createStudent(
+        input: createUserInput!
+    ) : user 
+    @aws_auth(cognito_groups: [ "SuperAdmin", "Faculty" ])
+    
+    updateStudent(
+        userId: ID! 
+        details: AWSJSON!
+    ) : user 
+    @aws_auth(cognito_groups: [ "Faculty" ])
+    
+
+    deleteUser( 
+        userId: ID!
+    ): user 
+    @aws_auth(cognito_groups: ["SuperAdmin"])
+    
+}
+
+input createUserInput {
+    email: String! 
+    password: String!
+    details: AWSJSON
+}
+
+type user {
+    userId: ID!
+    email: String!
+    role: String
+    details: AWSJSON
+    confirmed: Boolean
+    createdAt: AWSDateTime
+    updatedAt: AWSDateTime
+    createdBy: String
+    updatedBy: String
+}

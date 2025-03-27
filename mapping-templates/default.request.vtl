@@ -1,0 +1,9 @@
+{
+   "version" : "2018-05-29",
+   "operation": "Invoke",
+   "payload": {
+      "arguments": $utils.toJson($context.arguments),
+      "identity": $utils.toJson($context.identity),
+      "requestedUser": $utils.toJson($context.identity.username)
+   }
+}

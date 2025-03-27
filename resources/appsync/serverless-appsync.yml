@@ -1,0 +1,79 @@
+name: ${self:service}-${self:provider.stage}
+authenticationType: AMAZON_COGNITO_USER_POOLS
+userPoolConfig: 
+  awsRegion: ${self:provider.region}
+  defaultAction: ALLOW
+  userPoolId: !Ref CognitoUserPool
+schema:
+  - graphql/*
+defaultMappingTemplates:
+  request: default.request.vtl
+  response: default.response.vtl
+
+mappingTemplates:
+  - dataSource: createFaculty_Lambda
+    type: Mutation
+    field: createFaculty
+
+  - dataSource: createStudent_Lambda
+    type: Mutation
+    field: createStudent
+
+  - dataSource: updateStudent_Lambda
+    type: Mutation
+    field: updateStudent
+
+  - dataSource: deleteUser_Lambda
+    type: Mutation
+    field: deleteUser
+
+  - dataSource: studentList_Lambda
+    type: Query
+    field: studentList
+  
+  - dataSource: userDetails_Lambda
+    type: Query
+    field: userDetails
+
+  - dataSource: userList_Lambda
+    type: Query
+    field: userList
+
+dataSources:
+  - type: NONE
+    name: none
+
+  - type: AWS_LAMBDA
+    name: createFaculty_Lambda
+    config:
+      functionName: create-faculty
+
+  - type: AWS_LAMBDA
+    name: createStudent_Lambda
+    config:
+      functionName: create-student
+
+  - type: AWS_LAMBDA
+    name: updateStudent_Lambda
+    config:
+      functionName: update-student
+
+  - type: AWS_LAMBDA
+    name: deleteUser_Lambda
+    config:
+      functionName: delete-user
+      
+  - type: AWS_LAMBDA
+    name: studentList_Lambda
+    config:
+      functionName: student-list
+  
+  - type: AWS_LAMBDA
+    name: userDetails_Lambda
+    config:
+      functionName: user-details
+
+  - type: AWS_LAMBDA
+    name: userList_Lambda
+    config:
+      functionName: user-list

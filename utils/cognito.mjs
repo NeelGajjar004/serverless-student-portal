@@ -97,7 +97,8 @@ export const login = async ({ email, password }) => {
     const decodedToken = jwt.decode(IdToken);
     const userGroups = decodedToken?.["cognito:groups"] || [];
 
-    return { AccessToken, RefreshToken, IdToken, userGroups };
+    // return { AccessToken, RefreshToken, IdToken, userGroups };
+    return { AccessToken, RefreshToken, IdToken, userGroups, message:`${userGroups} Login Successfully..` };
 }
 
 export const logout = async ({ accessToken }) => {
@@ -112,7 +113,8 @@ export const logout = async ({ accessToken }) => {
         AccessToken: accessToken, // The access token of the user to log out
     }));
 
-    return signOut;
+    // return { signOut };
+    return { signOut, message:`User Logout successfully..!` };
 }
 
 export const createCognitoUser = async({ email, password, isStudent = true }) => {

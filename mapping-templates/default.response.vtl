@@ -1,0 +1,17 @@
+#if($context.error)
+    #set($errorName = $context.error.name)
+    #set($errorMessage = $context.error.message)
+    
+    #if($errorMessage.contains(":"))
+        #set($splitError = $errorMessage.split(":"))
+        #set($errorType = $splitError[0].trim())
+        #set($actualErrorMessage = $splitError[1].trim())
+    #else
+        #set($errorType = $errorName)
+        #set($actualErrorMessage = $errorMessage)
+    #end
+    
+    $util.error($actualErrorMessage, $errorType, $context.result)
+#end
+
+$utils.toJson($context.result)

@@ -48,10 +48,18 @@ custom:
   userPoolName: ${self:service}-UserPool-${opt:stage, self:provider.stage}
   userPoolClientName: ${self:service}-UserPoolClient-${opt:stage, self:provider.stage}
   userTableName: userTable-${opt:stage, self:provider.stage}  
+  appSync:
+    - ${file(resources/appsync/serverless-appsync.yml)}
   # studentTableName: studentTable-${opt:stage, self:provider.stage}
 
 package:
   individually: true
+
+plugins:
+  - serverless-jetpack
+  - serverless-appsync-plugin
+  # - serverless-plugin-common-excludes
+  # - serverless-plugin-include-dependencies
 
 layers:
   NodeModuleLibs:
@@ -117,134 +125,134 @@ functions:
   create-faculty:
     handler: functions/faculty/create-faculty.handler
     description: "Serverless-Student-Portal : SuperAdmin & Faculty User Can Create a New Faculty User"
-    events:
-      - http:
-          path: faculty
-          method: post
-          cors: true
-          authorizer:
-            name: FacultyAuthorizer
-            type: COGNITO_USER_POOLS
-            arn: !GetAtt CognitoUserPool.Arn
+    # events:
+    #   - http:
+    #       path: faculty
+    #       method: post
+    #       cors: true
+    #       authorizer:
+    #         name: FacultyAuthorizer
+    #         type: COGNITO_USER_POOLS
+    #         arn: !GetAtt CognitoUserPool.Arn
     package:
       include:
         - functions/faculty/create-faculty.mjs
         - utils/**
-        - middlewares/**
+        # - middlewares/**
       exclude:
         - "**/*"
   create-student:
     handler: functions/student/create-student.handler
     description: "Serverless-Student-Portal : Faculty Can Create a New Student"
-    events:
-      - http:
-          path: students
-          method: post
-          cors: true
-          authorizer:
-            name: StudentAuthorizer
-            type: COGNITO_USER_POOLS
-            arn: !GetAtt CognitoUserPool.Arn
+    # events:
+    #   - http:
+    #       path: students
+    #       method: post
+    #       cors: true
+    #       authorizer:
+    #         name: StudentAuthorizer
+    #         type: COGNITO_USER_POOLS
+    #         arn: !GetAtt CognitoUserPool.Arn
     package:
       include:
         - functions/student/create-student.mjs
         - utils/**
-        - middlewares/**
+        # - middlewares/**
       exclude:
         - "**/*"
   update-student:
     handler: functions/student/update-student.handler
     description: "Serverless-Student-Portal : Faculty Can update a Existing Students"
-    events:
-      - http:
-          path: students/{studentId}
-          method: put
-          cors: true
-          authorizer:
-            name: StudentAuthorizer
-            type: COGNITO_USER_POOLS
-            arn: !GetAtt CognitoUserPool.Arn
+    # events:
+    #   - http:
+    #       path: students/{studentId}
+    #       method: put
+    #       cors: true
+    #       authorizer:
+    #         name: StudentAuthorizer
+    #         type: COGNITO_USER_POOLS
+    #         arn: !GetAtt CognitoUserPool.Arn
     package:
       include:
         - functions/student/update-student.mjs
         - utils/**
-        - middlewares/**
+        # - middlewares/**
       exclude:
         - "**/*"
   student-list:
     handler: functions/student/student-list.handler
     description: "Serverless-Student-Portal : Faculty Can Listing a Existing Students"
-    events:
-      - http:
-          path: students
-          method: get
-          cors: true
-          authorizer:
-            name: StudentAuthorizer
-            type: COGNITO_USER_POOLS
-            arn: !GetAtt CognitoUserPool.Arn
+    # events:
+    #   - http:
+    #       path: students
+    #       method: get
+    #       cors: true
+    #       authorizer:
+    #         name: StudentAuthorizer
+    #         type: COGNITO_USER_POOLS
+    #         arn: !GetAtt CognitoUserPool.Arn
     package:
       include:
         - functions/student/student-list.mjs
         - utils/**
-        - middlewares/**
+        # - middlewares/**
       exclude:
         - "**/*"
   user-details:
     handler: functions/users/user-details.handler
     description: "Serverless-Student-Portal : User Details"
-    events:
-      - http:
-          path: users/me
-          method: get
-          cors: true
-          authorizer:
-            name: StudentAuthorizer
-            type: COGNITO_USER_POOLS
-            arn: !GetAtt CognitoUserPool.Arn
+    # events:
+    #   - http:
+    #       path: users/me
+    #       method: get
+    #       cors: true
+    #       authorizer:
+    #         name: StudentAuthorizer
+    #         type: COGNITO_USER_POOLS
+    #         arn: !GetAtt CognitoUserPool.Arn
     package:
       include:
         - functions/users/user-details.mjs
         - utils/**
-        - middlewares/**
+        # - middlewares/**
       exclude:
         - "**/*"
   delete-user:
     handler: functions/users/user-delete.handler
     description: "Serverless-Student-Portal : Delete User "
-    events:
-      - http:
-          path: users/{userId}
-          method: delete
-          cors: true
-          authorizer:
-            name: StudentAuthorizer
-            type: COGNITO_USER_POOLS
-            arn: !GetAtt CognitoUserPool.Arn
+    # events:
+    #   - http:
+    #       path: users/{userId}
+    #       method: delete
+    #       cors: true
+    #       authorizer:
+    #         name: StudentAuthorizer
+    #         type: COGNITO_USER_POOLS
+    #         arn: !GetAtt CognitoUserPool.Arn
     package:
       include:
         - functions/users/user-delete.mjs
         - utils/**
-        - middlewares/**
+        # - middlewares/**
       exclude:
         - "**/*"
   user-list:
     handler: functions/users/user-list.handler
     description: "Serverless-Student-Portal : User List "
-    events:
-      - http:
-          path: users
-          method: get
-          cors: true
-          authorizer:
-            name: StudentAuthorizer
-            type: COGNITO_USER_POOLS
-            arn: !GetAtt CognitoUserPool.Arn
+    # events:
+    #   - http:
+    #       path: users
+    #       method: get
+    #       cors: true
+    #       authorizer:
+    #         name: StudentAuthorizer
+    #         type: COGNITO_USER_POOLS
+    #         arn: !GetAtt CognitoUserPool.Arn
     package:
       include:
         - functions/users/user-list.mjs
         - utils/**
-        - middlewares/**
+        # - middlewares/**
       exclude:
         - "**/*"
 

@@ -1,6 +1,32 @@
+// import { logout } from "../../utils/cognito.mjs";
+
+// export const handler = async (event, context) => {
+
+//     console.log("Event : ",event);
+//     console.log("Context : ",context);
+
+//     const { accessToken } = event.arguments.input;
+    
+//     try {
+//         const globalSignOut = await logout({ accessToken:accessToken });
+        
+//         if (!globalSignOut) {
+//             throw new Error("Login failed. No response from Cognito.");
+//         }
+
+//         return JSON.stringify(globalSignOut);
+
+//     } catch (error) {
+//         console.error("[logout.mjs]    ==========> ", error);
+
+//         throw new Error(error.message || "Error on Logging Out User..!")
+
+//     }
+// }
+
+//  ====> REST API : 
 import { logout } from "../../utils/cognito.mjs";
 import { generateResponse } from "../../utils/response.mjs";
-
 
 export const handler = async (event) => {
 
