@@ -6,7 +6,6 @@ export const handler = async (event) => {
     
     console.log("Event : ",event);
     const userId = event.identity.claims?.sub;
-    console.log("userId : ",userId);
     
     try {
         const key = { userId: userId };

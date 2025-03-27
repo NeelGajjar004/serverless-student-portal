@@ -29,18 +29,10 @@ export const handler = async (event) => {
     } catch (error) {
         console.error("[delete-user.mjs]    ==========> ", error);
         
-        throw new Error(error);
-        // throw new Error(error.name+" : "+error.message);
+        throw new Error(`${error.name} : ${error.message}`);
 
     }
 }
-
-// #if($context.error)
-//     $utils.error($context.error.message,$context.error.name, $context.result)
-// #end
-
-// $utils.toJson($context.result)
-
 
 // GraphQL API :
 

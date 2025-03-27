@@ -32,7 +32,7 @@ export const handler = async (event) => {
     } catch (error) {
         console.error("[update-student.mjs]    ==========> ", error);
 
-        throw new Error(error.message);   
+        throw new Error(`${error.name} : ${error.message}`);   
 
     }
 }

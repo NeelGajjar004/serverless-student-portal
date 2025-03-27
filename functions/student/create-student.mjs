@@ -36,11 +36,9 @@ export const handler = async (event) => {
         // Handle InvalidPasswordException
         if (error.name === "InvalidPasswordException") {
             error.message = '1. Password does not meet the requirements       2. Password must be at least 8 characters long.       3. Password Contains at least one uppercase, lowercase, numbers, and special characters.';
-            // err = "InvalidPasswordException ";
         }
         
         throw new Error(`${error.name} : ${error.message}`);
-        // throw new Error(`${err} : ${message}`);
 
     }
 }

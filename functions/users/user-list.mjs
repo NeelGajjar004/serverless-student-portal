@@ -18,7 +18,7 @@ export const handler = async (event) => {
     } catch (error) {
         console.error("[user-list.mjs]    ==========> ", error);
 
-        throw new Error(error.name+" : "+error.message);   
+        throw new Error(`${error.name} : ${error.message}`);   
         
     }
 }

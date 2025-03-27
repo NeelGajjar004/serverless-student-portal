@@ -31,16 +31,12 @@ export const handler = async (event) => {
     } catch (error) {
         console.error("[create-faculty.mjs]    ==========> ", error);
 
-        let message = 'error on creating faculty..!';
-        let err = error.message;
-
         // Handle InvalidPasswordException
         if (error.name === "InvalidPasswordException") {
-            message = 'Password does not meet the requirements';
-            err = "InvalidPasswordException : Password must be at least 8 characters long. ==> Password Contains at least one uppercase, lowercase, numbers, and special characters.";
+            error.message = '1. Password does not meet the requirements       2. Password must be at least 8 characters long.       3. Password Contains at least one uppercase, lowercase, numbers, and special characters.';
         }
-
-        throw new Error(`message : ${message} => error : ${err} `);
+        
+        throw new Error(`${error.name} : ${error.message}`);
 
     }
 }
